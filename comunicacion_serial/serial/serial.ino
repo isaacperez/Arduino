@@ -14,9 +14,9 @@ void setup() {
   pinMode(ledVerde,OUTPUT);
 
   //-----------------------------------------------------------------
-  //Inicializamos el puerto serial a 9600 baudios
+  //Inicializamos el puerto serial a 115200 baudios
   //-----------------------------------------------------------------
-  Serial.begin(9600);
+  Serial.begin(115200);
 
 }
 
@@ -67,16 +67,19 @@ void serialEvent(){
   //-----------------------------------------------------------------
   // Pasamos las mediciones al formato esperado
   //-----------------------------------------------------------------
-  int pesoAenEnterosConPrimerDecimal{gramosPesoA*10};
-  int pesoBenEnterosConPrimerDecimal{gramosPesoB*10};
+  long pesoAConPrimerDecimalEnLasUnidades = gramosPesoA*10.0;
+  long pesoBConPrimerDecimalEnLasUnidades = gramosPesoB*10.0;
 
-  for(int i = 0, divisor = DIVISOR; i < NUM_BYTE_MEDICION; i++, divisor /= 10){
+  long divisor = DIVISOR;
+  for(int i = 0; i < NUM_BYTE_MEDICION; i++){
     
-    bytesMedicionPesoA[i] = pesoAenEnterosConPrimerDecimal / divisor;
-    bytesMedicionPesoB[i] = pesoBenEnterosConPrimerDecimal / divisor;
+    bytesMedicionPesoA[i] = pesoAConPrimerDecimalEnLasUnidades / divisor;
+    bytesMedicionPesoB[i] = pesoBConPrimerDecimalEnLasUnidades / divisor;
 
-    pesoAenEnterosConPrimerDecimal %= divisor;
-    pesoBenEnterosConPrimerDecimal %= divisor;
+    pesoAConPrimerDecimalEnLasUnidades %= divisor;
+    pesoBConPrimerDecimalEnLasUnidades %= divisor;
+
+    divisor /= 10;
 
     //Serial.println(bytesMedicionPesoA[i]);
     //Serial.println(bytesMedicionPesoB[i]);
